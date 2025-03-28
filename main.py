@@ -38,9 +38,13 @@ def sync_video_names():
             result = connection.execute(text("SELECT id, text, video_file_name FROM gloss_dictionary"))
             rows = result.fetchall()
 
-            logger.info(f"Rows: {rows}")
+            logger.info(f"Rows Count: {len(rows)}")
 
             for row in rows:
+                if row.video_file_name is None:
+                    logger.info(f"Skipping record as no video file name is set {row.id}")
+                    continue
+
                 video_name_without_ext = row.video_file_name.replace('.mp4', '')
 
                 if row.text != video_name_without_ext:
